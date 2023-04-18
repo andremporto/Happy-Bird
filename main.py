@@ -9,7 +9,7 @@ TELA_ALTURA = 800
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "pipe.png")))
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "base.png")))
 IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bg.png")))
-IMAGEMS_PASSARO = [
+IMAGENS_PASSARO = [
     pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird1.png"))),
     pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird2.png"))),
     pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird3.png"))),
@@ -20,7 +20,7 @@ FONTE_PONTOS = pygame.font.SysFont("arial", 50)
 
 
 class Passaro:
-    IMGS = IMAGEMS_PASSARO
+    IMGS = IMAGENS_PASSARO
     # Animações da rotação
     ROTACAO_MAXIMA = 25
     VELOCIDADE_ROTACAO = 20
