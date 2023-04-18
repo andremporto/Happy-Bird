@@ -6,13 +6,13 @@ import pygame
 TELA_LARGURA = 500
 TELA_ALTURA = 800
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "pipe.png")))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "base.png")))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bg.png")))
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))
+IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 IMAGENS_PASSARO = [
-    pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird1.png"))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird2.png"))),
-    pygame.transform.scale2x(pygame.image.load(os.path.join("images", "bird3.png"))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))),
+    pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png"))),
 ]
 
 pygame.font.init()
@@ -21,7 +21,7 @@ FONTE_PONTOS = pygame.font.SysFont("arial", 50)
 
 class Passaro:
     IMGS = IMAGENS_PASSARO
-    # Animações da rotação
+    # animações da rotação
     ROTACAO_MAXIMA = 25
     VELOCIDADE_ROTACAO = 20
     TEMPO_ANIMACAO = 5
@@ -42,12 +42,11 @@ class Passaro:
         self.altura = self.y
 
     def mover(self):
-        # Calcular o deslocamento
+        # calcular o deslocamento
         self.tempo += 1
-        # S=so+vot+at²/2
         deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
 
-        # Restringir o deslocamento
+        # restringir o deslocamento
         if deslocamento > 16:
             deslocamento = 16
         elif deslocamento < 0:
@@ -55,8 +54,8 @@ class Passaro:
 
         self.y += deslocamento
 
-        # Angulo do passaro
-        if deslocamento > 0 or self.y < (self.altura + 50):
+        # o angulo do passaro
+        if deslocamento < 0 or self.y < (self.altura + 50):
             if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
         else:
@@ -64,7 +63,7 @@ class Passaro:
                 self.angulo -= self.VELOCIDADE_ROTACAO
 
     def desenhar(self, tela):
-        # Definir qual imagem do pássaro vai usar
+        # definir qual imagem do passaro vai usar
         self.contagem_imagem += 1
 
         if self.contagem_imagem < self.TEMPO_ANIMACAO:
@@ -79,15 +78,15 @@ class Passaro:
             self.imagem = self.IMGS[0]
             self.contagem_imagem = 0
 
-        # Se o passaro estiver caindo nao bate asa
+        # se o passaro tiver caindo eu não vou bater asa
         if self.angulo <= -80:
             self.imagem = self.IMGS[1]
-            self.contagem_imagem = self.TEMPO_ANIMACAO + 2
+            self.contagem_imagem = self.TEMPO_ANIMACAO * 2
 
-        # Desenhar a imagem
+        # desenhar a imagem
         imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
-        posicao_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
-        retangulo = imagem_rotacionada.get_rect(center=posicao_centro_imagem)
+        pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
+        retangulo = imagem_rotacionada.get_rect(center=pos_centro_imagem)
         tela.blit(imagem_rotacionada, retangulo.topleft)
 
     def get_mask(self):
@@ -110,7 +109,7 @@ class Cano:
 
     def definir_altura(self):
         self.altura = random.randrange(50, 450)
-        self.pos_base = self.altura - self.CANO_TOPO.get_height()
+        self.pos_topo = self.altura - self.CANO_TOPO.get_height()
         self.pos_base = self.altura + self.DISTANCIA
 
     def mover(self):
@@ -152,24 +151,23 @@ class Chao:
         self.x2 -= self.VELOCIDADE
 
         if self.x1 + self.LARGURA < 0:
-            self.x1 = self.x1 + self.LARGURA
+            self.x1 = self.x2 + self.LARGURA
         if self.x2 + self.LARGURA < 0:
-            self.x2 = self.x2 + self.LARGURA
+            self.x2 = self.x1 + self.LARGURA
 
     def desenhar(self, tela):
         tela.blit(self.IMAGEM, (self.x1, self.y))
         tela.blit(self.IMAGEM, (self.x2, self.y))
 
 
-def desenhar_tela(tela, passaros, canos, chao, portos):
+def desenhar_tela(tela, passaros, canos, chao, pontos):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
-
     for passaro in passaros:
         passaro.desenhar(tela)
     for cano in canos:
         cano.desenhar(tela)
 
-    texto = FONTE_PONTOS.render("Pontuação: {pontos}", 1, (255, 255, 255))
+    texto = FONTE_PONTOS.render(f"Pontos: {pontos}", 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
     chao.desenhar(tela)
     pygame.display.update()
@@ -186,7 +184,8 @@ def main():
     rodando = True
     while rodando:
         relogio.tick(30)
-        # Interação com o usuário
+
+        # interação com o usuário
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -196,7 +195,8 @@ def main():
                 if evento.key == pygame.K_SPACE:
                     for passaro in passaros:
                         passaro.pular()
-        # Mover os elementos
+
+        # mover as coisas
         for passaro in passaros:
             passaro.mover()
         chao.mover()
@@ -206,7 +206,7 @@ def main():
         for cano in canos:
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
-                    passaro.pop(i)
+                    passaros.pop(i)
                 if not cano.passou and passaro.x > cano.x:
                     cano.passou = True
                     adicionar_cano = True
@@ -220,7 +220,6 @@ def main():
         for cano in remover_canos:
             canos.remove(cano)
 
-        # Morte do pássaro ao colidir com o chão
         for i, passaro in enumerate(passaros):
             if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
