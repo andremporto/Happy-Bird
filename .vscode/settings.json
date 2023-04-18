@@ -1,3 +1,16 @@
 {
-	"cSpell.words": ["ANIMACAO", "CHAO", "ROTACAO"]
+	"cSpell.words": [
+		"ANIMACAO",
+		"blit",
+		"chao",
+		"Chao",
+		"CHAO",
+		"KEYDOWN",
+		"passaro",
+		"passaros",
+		"relogio",
+		"retangulo",
+		"ROTACAO",
+		"topleft"
+	]
 }
